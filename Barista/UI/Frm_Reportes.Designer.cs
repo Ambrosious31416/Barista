@@ -252,31 +252,37 @@ namespace Barista.UI
             // 
             // dataGridViewTextBoxColumn1
             // 
+            dataGridViewTextBoxColumn1.HeaderText = "Fecha";
             dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
             dataGridViewTextBoxColumn1.ReadOnly = true;
             // 
             // dataGridViewTextBoxColumn2
             // 
+            dataGridViewTextBoxColumn2.HeaderText = "Insumo";
             dataGridViewTextBoxColumn2.Name = "dataGridViewTextBoxColumn2";
             dataGridViewTextBoxColumn2.ReadOnly = true;
             // 
             // dataGridViewTextBoxColumn3
             // 
+            dataGridViewTextBoxColumn3.HeaderText = "Tipo";
             dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
             dataGridViewTextBoxColumn3.ReadOnly = true;
             // 
             // dataGridViewTextBoxColumn4
             // 
+            dataGridViewTextBoxColumn4.HeaderText = "Cantidad";
             dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
             dataGridViewTextBoxColumn4.ReadOnly = true;
             // 
             // dataGridViewTextBoxColumn5
             // 
+            dataGridViewTextBoxColumn5.HeaderText = "Stock anterior → posterior";
             dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
             dataGridViewTextBoxColumn5.ReadOnly = true;
             // 
             // dataGridViewTextBoxColumn6
             // 
+            dataGridViewTextBoxColumn6.HeaderText = "Referencia";
             dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
             dataGridViewTextBoxColumn6.ReadOnly = true;
             // 
@@ -326,16 +332,19 @@ namespace Barista.UI
             // 
             // dataGridViewTextBoxColumn7
             // 
+            dataGridViewTextBoxColumn7.HeaderText = "Insumo";
             dataGridViewTextBoxColumn7.Name = "dataGridViewTextBoxColumn7";
             dataGridViewTextBoxColumn7.ReadOnly = true;
             // 
             // dataGridViewTextBoxColumn8
             // 
+            dataGridViewTextBoxColumn8.HeaderText = "Cantidad consumida";
             dataGridViewTextBoxColumn8.Name = "dataGridViewTextBoxColumn8";
             dataGridViewTextBoxColumn8.ReadOnly = true;
             // 
             // dataGridViewTextBoxColumn9
             // 
+            dataGridViewTextBoxColumn9.HeaderText = "Preparaciones";
             dataGridViewTextBoxColumn9.Name = "dataGridViewTextBoxColumn9";
             dataGridViewTextBoxColumn9.ReadOnly = true;
             // 
@@ -385,21 +394,25 @@ namespace Barista.UI
             // 
             // dataGridViewTextBoxColumn10
             // 
+            dataGridViewTextBoxColumn10.HeaderText = "Insumo";
             dataGridViewTextBoxColumn10.Name = "dataGridViewTextBoxColumn10";
             dataGridViewTextBoxColumn10.ReadOnly = true;
             // 
             // dataGridViewTextBoxColumn11
             // 
+            dataGridViewTextBoxColumn11.HeaderText = "Stock actual";
             dataGridViewTextBoxColumn11.Name = "dataGridViewTextBoxColumn11";
             dataGridViewTextBoxColumn11.ReadOnly = true;
             // 
             // dataGridViewTextBoxColumn12
             // 
+            dataGridViewTextBoxColumn12.HeaderText = "Stock mínimo";
             dataGridViewTextBoxColumn12.Name = "dataGridViewTextBoxColumn12";
             dataGridViewTextBoxColumn12.ReadOnly = true;
             // 
             // dataGridViewTextBoxColumn13
             // 
+            dataGridViewTextBoxColumn13.HeaderText = "Faltante";
             dataGridViewTextBoxColumn13.Name = "dataGridViewTextBoxColumn13";
             dataGridViewTextBoxColumn13.ReadOnly = true;
             // 
