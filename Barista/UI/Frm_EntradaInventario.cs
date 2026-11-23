@@ -117,6 +117,17 @@ namespace Barista.UI
                 decimal stockAnterior = ing.StockActual;
                 ing.StockActual += _totalCalculadoEnUnidadBase;
 
+                _contexto.MovimientosInventario.Add(new MovimientoInventario
+                {
+                    IdIngrediente = ing.IdIngrediente,
+                    Fecha = DateTime.Now,
+                    Tipo = "Entrada",
+                    Cantidad = _totalCalculadoEnUnidadBase,
+                    StockAnterior = stockAnterior,
+                    StockPosterior = ing.StockActual,
+                    Referencia = "Reabastecimiento de inventario"
+                });
+
                 await _contexto.SaveChangesAsync();
 
                 string nombrePresentacion = (Cmb_UnidadPresentacion.SelectedItem as UnidadPresentacionItem)?.Nombre.Split(' ')[0] ?? _ingrediente.Unidad;

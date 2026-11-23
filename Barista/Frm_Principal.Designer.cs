@@ -19,6 +19,7 @@
         {
             Pnl_Sidebar = new Panel();
             Btn_Salir = new Button();
+            Btn_Reportes = new Button();
             Btn_Inventario = new Button();
             Btn_GestionRecetas = new Button();
             Btn_Catalogo = new Button();
@@ -33,6 +34,7 @@
             // 
             Pnl_Sidebar.BackColor = Color.FromArgb(43, 30, 26);
             Pnl_Sidebar.Controls.Add(Btn_Salir);
+            Pnl_Sidebar.Controls.Add(Btn_Reportes);
             Pnl_Sidebar.Controls.Add(Btn_Inventario);
             Pnl_Sidebar.Controls.Add(Btn_GestionRecetas);
             Pnl_Sidebar.Controls.Add(Btn_Catalogo);
@@ -45,6 +47,25 @@
             Pnl_Sidebar.Size = new Size(240, 720);
             Pnl_Sidebar.TabIndex = 0;
             // 
+            // Btn_Reportes
+            //
+            Btn_Reportes.BackColor = Color.FromArgb(43, 30, 26);
+            Btn_Reportes.Cursor = Cursors.Hand;
+            Btn_Reportes.FlatAppearance.BorderSize = 0;
+            Btn_Reportes.FlatAppearance.MouseOverBackColor = Color.FromArgb(70, 55, 50);
+            Btn_Reportes.FlatStyle = FlatStyle.Flat;
+            Btn_Reportes.Font = new Font("Segoe UI", 10.5F, FontStyle.Bold);
+            Btn_Reportes.ForeColor = Color.FromArgb(215, 200, 185);
+            Btn_Reportes.Location = new Point(10, 317);
+            Btn_Reportes.Name = "Btn_Reportes";
+            Btn_Reportes.Padding = new Padding(12, 0, 0, 0);
+            Btn_Reportes.Size = new Size(220, 46);
+            Btn_Reportes.TabIndex = 7;
+            Btn_Reportes.Text = "📊 Reportes";
+            Btn_Reportes.TextAlign = ContentAlignment.MiddleLeft;
+            Btn_Reportes.UseVisualStyleBackColor = false;
+            Btn_Reportes.Click += Btn_Reportes_Click;
+            //
             // Btn_Salir
             // 
             Btn_Salir.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
@@ -197,6 +218,7 @@
         private Button Btn_Catalogo;
         private Button Btn_GestionRecetas;
         private Button Btn_Inventario;
+        private Button Btn_Reportes;
         private Button Btn_Salir;
     }
 }

@@ -100,6 +100,7 @@ namespace Barista.UI
                 }
 
                 Txt_Bebida.Text = receta.Bebida?.Nombre ?? "";
+                Txt_Descripcion.Text = receta.Bebida?.Descripcion ?? "";
                 Cmb_Categoria.Text = receta.Bebida?.Categoria?.Nombre ?? "";
                 Cmb_Tamano.Text = receta.Tamaño;
 
@@ -305,6 +306,7 @@ namespace Barista.UI
                 }
 
                 bebida.IdCategoria = categoria.IdCategoria;
+                bebida.Descripcion = Txt_Descripcion.Text.Trim();
 
                 await _contexto.SaveChangesAsync();
 
