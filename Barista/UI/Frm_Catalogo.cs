@@ -97,7 +97,6 @@ namespace Barista.UI
         {
             if (e.RowIndex < 0) return;
 
-            // Formatear semáforo de estado
             if (e.ColumnIndex == 4 && e.Value != null)
             {
                 string estado = e.Value.ToString() ?? "";

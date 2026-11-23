@@ -13,25 +13,22 @@ namespace Barista
 
         private void Frm_Principal_Load(object? sender, EventArgs e)
         {
-            // Módulo inicial al abrir el programa
             Navegar(Btn_Catalogo, () => new Frm_Catalogo());
         }
 
         #region Navegación entre módulos (panel lateral)
 
-        private void Navegar(Button botonActivo, Func<Form> crearFormulario)
+        private void Navegar(Button Boton_Activo, Func<Form> Crear_Formulario)
         {
-            // No se permite cambiar de módulo mientras haya un diálogo abierto
-            // (autorización, edición de recetas, ingreso de insumos, etc.)
-            if (HayDialogoModalAbierto())
+            
+            if (Comprovacion_Ventana_Abierta())
             {
                 return;
             }
 
-            ResaltarBoton(botonActivo);
+            Hover_Boton(Boton_Activo);
 
-            // Se retira el módulo anterior: al volver a entrar se crea de nuevo
-            // para que muestre datos frescos de la base de datos.
+            
             while (Pnl_Contenido.Controls.Count > 0)
             {
                 Control control = Pnl_Contenido.Controls[0];
@@ -39,37 +36,33 @@ namespace Barista
 
                 if (control is Form form)
                 {
-                    // Dispara FormClosed y libera el Contexto de Entity Framework
                     try
                     {
                         form.Close();
                     }
                     catch
                     {
-                        // Si Close no está disponible para el formulario embebido,
-                        // el Dispose de abajo se encarga de liberarlo.
                     }
                 }
 
                 control.Dispose();
             }
 
-            Form formulario = crearFormulario();
-            formulario.TopLevel = false;
-            formulario.FormBorderStyle = FormBorderStyle.None;
-            formulario.Dock = DockStyle.Fill;
+            Form Formulario = Crear_Formulario();
+            Formulario.TopLevel = false;
+            Formulario.FormBorderStyle = FormBorderStyle.None;
+            Formulario.Dock = DockStyle.Fill;
 
-            Pnl_Contenido.Controls.Add(formulario);
-            formulario.Show();
+            Pnl_Contenido.Controls.Add(Formulario);
+            Formulario.Show();
         }
 
-        private bool HayDialogoModalAbierto()
+        private bool Comprovacion_Ventana_Abierta()
         {
-            foreach (Form form in Application.OpenForms)
+            foreach (Form Formulario in Application.OpenForms)
             {
-                // Los módulos embebidos no son de nivel superior (TopLevel = false);
-                // los diálogos como Frm_Autorizacion o Frm_EditarReceta sí lo son.
-                if (form != this && form.TopLevel && form.Visible)
+
+                if (Formulario != this && Formulario.TopLevel && Formulario.Visible)
                 {
                     return true;
                 }
@@ -78,19 +71,19 @@ namespace Barista
             return false;
         }
 
-        private void ResaltarBoton(Button botonActivo)
+        private void Hover_Boton(Button Boton_Activo)
         {
-            foreach (Control control in Pnl_Sidebar.Controls)
+            foreach (Control Control in Pnl_Sidebar.Controls)
             {
-                if (control is Button boton && boton != Btn_Salir)
+                if (Control is Button Boton && Boton != Btn_Salir)
                 {
-                    bool activa = boton == botonActivo;
+                    bool Activo = Boton == Boton_Activo;
 
-                    boton.BackColor = activa
+                    Boton.BackColor = Activo
                         ? Color.FromArgb(140, 75, 45)
                         : Color.FromArgb(43, 30, 26);
 
-                    boton.ForeColor = activa
+                    Boton.ForeColor = Activo
                         ? Color.White
                         : Color.FromArgb(215, 200, 185);
                 }

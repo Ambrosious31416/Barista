@@ -25,7 +25,7 @@ namespace Barista.UI
                 return;
             }
 
-            string unidadSeleccionada = Cmb_Unidad.Text.Split(' ')[0]; // ej. "g", "ml"
+            string unidadSeleccionada = Cmb_Unidad.Text.Split(' ')[0];
 
             try
             {
@@ -37,7 +37,6 @@ namespace Barista.UI
                     return;
                 }
 
-                // Inicia con stock en 0 tal como se solicitó
                 var nuevo = new Ingrediente
                 {
                     Nombre = nombre,

@@ -36,7 +36,6 @@ namespace Barista.UI
                     .OrderBy(i => i.Nombre)
                     .ToListAsync();
 
-                // Calcular contadores de resumen
                 int total = _ingredientesTodos.Count;
                 int bajos = _ingredientesTodos.Count(i => i.StockActual <= i.StockMinimo);
                 int optimos = total - bajos;
@@ -56,7 +55,7 @@ namespace Barista.UI
         private void AplicarFiltro()
         {
             string texto = Txt_Buscar.Text.Trim().ToLower();
-            int filtroEstado = Cmb_FiltroStock.SelectedIndex; // 0: Todos, 1: Solo Bajos, 2: Solo Óptimos
+            int filtroEstado = Cmb_FiltroStock.SelectedIndex;
 
             var filtrados = _ingredientesTodos.AsEnumerable();
 
@@ -65,11 +64,11 @@ namespace Barista.UI
                 filtrados = filtrados.Where(i => i.Nombre.ToLower().Contains(texto));
             }
 
-            if (filtroEstado == 1) // Solo Stock Bajo
+            if (filtroEstado == 1)
             {
                 filtrados = filtrados.Where(i => i.StockActual <= i.StockMinimo);
             }
-            else if (filtroEstado == 2) // Solo Óptimo
+            else if (filtroEstado == 2)
             {
                 filtrados = filtrados.Where(i => i.StockActual > i.StockMinimo);
             }
@@ -95,7 +94,6 @@ namespace Barista.UI
         {
             if (e.RowIndex < 0) return;
 
-            // Formatear semáforo de estado
             if (e.ColumnIndex == 5 && e.Value != null)
             {
                 string estado = e.Value.ToString() ?? "";
@@ -208,7 +206,6 @@ namespace Barista.UI
             int idIngrediente = Dgv_Inventario.CurrentRow.Cells[0].Value is int id ? id : 0;
             string nombre = Dgv_Inventario.CurrentRow.Cells[1].Value?.ToString() ?? "";
 
-            // Validación de integridad: ¿Está en alguna receta?
             bool enUso = await _contexto.RecetaIngredientes.AnyAsync(ri => ri.IdIngrediente == idIngrediente);
             if (enUso)
             {

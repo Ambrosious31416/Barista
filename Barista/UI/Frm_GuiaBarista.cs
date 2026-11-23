@@ -13,7 +13,6 @@ namespace Barista.UI
         private List<Receta> _recetasBebidaActual = new();
         private Receta? _recetaSeleccionada;
 
-        // Variables del Cronómetro
         private int _segundosTimer = 0;
         private bool _cargando = false;
 
@@ -173,7 +172,6 @@ namespace Barista.UI
 
             if (receta == null) return;
 
-            // 1. Mostrar ingredientes
             if (receta.RecetaIngredientes != null && receta.RecetaIngredientes.Count > 0)
             {
                 foreach (var ri in receta.RecetaIngredientes)
@@ -190,7 +188,6 @@ namespace Barista.UI
                 Dgv_Ingredientes.Rows.Add("No hay ingredientes registrados", "-", "-");
             }
 
-            // 2. Mostrar pasos de preparación
             if (receta.PasosPreparacion != null && receta.PasosPreparacion.Count > 0)
             {
                 var pasosOrdenados = receta.PasosPreparacion.OrderBy(p => p.NumeroPaso).ToList();
@@ -250,7 +247,6 @@ namespace Barista.UI
             using var brushBg = new SolidBrush(bgColor);
             e.Graphics.FillRectangle(brushBg, e.Bounds);
 
-            // Borde lateral indicador si está seleccionada
             if (seleccionada)
             {
                 using var brushBar = new SolidBrush(Color.FromArgb(140, 75, 45));
@@ -268,7 +264,6 @@ namespace Barista.UI
             e.Graphics.DrawString(bebida.Nombre, fontTitulo, brushText, x, y);
             e.Graphics.DrawString(bebida.Categoria?.Nombre ?? "Sin categoría", fontSub, brushSub, x, y + 18);
 
-            // Línea divisoria suave
             using var penDiv = new Pen(Color.FromArgb(235, 235, 235));
             e.Graphics.DrawLine(penDiv, e.Bounds.Left, e.Bounds.Bottom - 1, e.Bounds.Right, e.Bounds.Bottom - 1);
         }
@@ -297,7 +292,6 @@ namespace Barista.UI
             using var brushBg = new SolidBrush(Color.White);
             e.Graphics.FillRectangle(brushBg, e.Bounds);
 
-            // Badge del número de paso
             if (paso.NumeroPaso > 0)
             {
                 Rectangle badgeRect = new Rectangle(e.Bounds.Left + 8, e.Bounds.Top + 8, 62, 24);
@@ -310,7 +304,6 @@ namespace Barista.UI
                 e.Graphics.DrawString($"PASO {paso.NumeroPaso}", fontBadge, brushBadgeText, badgeRect, sf);
             }
 
-            // Texto del paso
             int xTexto = paso.NumeroPaso > 0 ? e.Bounds.Left + 80 : e.Bounds.Left + 12;
             int yTexto = e.Bounds.Top + 8;
             int anchoTexto = e.Bounds.Width - xTexto - 10;
@@ -322,7 +315,6 @@ namespace Barista.UI
 
             e.Graphics.DrawString(paso.Instruccion, fontTexto, brushTexto, rectTexto);
 
-            // Separador suave entre pasos
             using var penSep = new Pen(Color.FromArgb(242, 240, 238));
             e.Graphics.DrawLine(penSep, e.Bounds.Left + 8, e.Bounds.Bottom - 1, e.Bounds.Right - 8, e.Bounds.Bottom - 1);
         }
@@ -363,14 +355,13 @@ namespace Barista.UI
 
         private void ActualizarEstiloTimer()
         {
-            // Rango óptimo de espresso entre 25s y 30s
             if (_segundosTimer >= 25 && _segundosTimer <= 30)
             {
-                Lbl_TimerDisplay.ForeColor = Color.FromArgb(46, 125, 50); // Verde de rango perfecto
+                Lbl_TimerDisplay.ForeColor = Color.FromArgb(46, 125, 50);
             }
             else if (_segundosTimer > 30)
             {
-                Lbl_TimerDisplay.ForeColor = Color.FromArgb(198, 40, 40); // Rojo de sobre-extracción
+                Lbl_TimerDisplay.ForeColor = Color.FromArgb(198, 40, 40);
             }
             else
             {
@@ -380,7 +371,6 @@ namespace Barista.UI
 
         #endregion
 
-        // Clases auxiliares para el DataBinding
         private class CategoriaItem
         {
             public int IdCategoria { get; set; }

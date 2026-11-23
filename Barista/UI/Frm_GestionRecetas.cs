@@ -77,13 +77,11 @@ namespace Barista.UI
 
         private bool SolicitarAutorizacion()
         {
-            // Si ya se autenticó previamente en esta ventana, se permite continuar
             if (_usuarioAutorizado != null && _usuarioAutorizado.PuedeEditarRecetas)
             {
                 return true;
             }
 
-            // Solo al momento de agregar, editar o eliminar se solicitan las credenciales
             using var dlg = new Frm_Autorizacion(_contexto);
             if (dlg.ShowDialog(this) == DialogResult.OK && dlg.UsuarioAutorizado != null)
             {

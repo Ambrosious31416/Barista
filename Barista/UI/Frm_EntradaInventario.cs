@@ -35,21 +35,19 @@ namespace Barista.UI
 
             if (u == "ml" || u.Contains("mili"))
             {
-                // Insumo líquido en mililitros
                 Cmb_UnidadPresentacion.Items.Add(new UnidadPresentacionItem("L (Litros)", 1000m));
                 Cmb_UnidadPresentacion.Items.Add(new UnidadPresentacionItem("ml (Mililitros)", 1m));
                 Cmb_UnidadPresentacion.Items.Add(new UnidadPresentacionItem("oz (Onzas líquidas fl oz)", 29.57m));
                 Cmb_UnidadPresentacion.Items.Add(new UnidadPresentacionItem("gal (Galones)", 3785.41m));
-                Cmb_UnidadPresentacion.SelectedIndex = 0; // Default: Litros (ej. botellas de 1 L)
+                Cmb_UnidadPresentacion.SelectedIndex = 0;
             }
             else if (u == "g" || u.Contains("gram"))
             {
-                // Insumo sólido en gramos
                 Cmb_UnidadPresentacion.Items.Add(new UnidadPresentacionItem("kg (Kilogramos)", 1000m));
                 Cmb_UnidadPresentacion.Items.Add(new UnidadPresentacionItem("g (Gramos)", 1m));
                 Cmb_UnidadPresentacion.Items.Add(new UnidadPresentacionItem("lb (Libras)", 453.59m));
                 Cmb_UnidadPresentacion.Items.Add(new UnidadPresentacionItem("oz (Onzas de peso)", 28.35m));
-                Cmb_UnidadPresentacion.SelectedIndex = 0; // Default: Kilogramos (ej. bolsas de 1 kg)
+                Cmb_UnidadPresentacion.SelectedIndex = 0;
             }
             else if (u == "l" || u.Contains("litr"))
             {
@@ -67,7 +65,6 @@ namespace Barista.UI
             }
             else
             {
-                // Piezas, paquetes o unidades directas
                 Cmb_UnidadPresentacion.Items.Add(new UnidadPresentacionItem($"{_ingrediente.Unidad} (Directo)", 1m));
                 Cmb_UnidadPresentacion.Items.Add(new UnidadPresentacionItem("caja / paquete", 1m));
                 Cmb_UnidadPresentacion.SelectedIndex = 0;
@@ -89,10 +86,9 @@ namespace Barista.UI
             if (Cmb_UnidadPresentacion.SelectedItem is UnidadPresentacionItem item)
             {
                 factor = item.FactorAUnidadBase;
-                nombrePresentacion = item.Nombre.Split(' ')[0]; // ej. "L", "kg", "ml"
+                nombrePresentacion = item.Nombre.Split(' ')[0];
             }
 
-            // Fórmula: Cantidad de empaques * (tamaño de cada empaque * factor a unidad base)
             _totalCalculadoEnUnidadBase = paquetes * (tamano * factor);
 
             decimal nuevoStock = _ingrediente.StockActual + _totalCalculadoEnUnidadBase;

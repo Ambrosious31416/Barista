@@ -10,8 +10,6 @@ namespace Barista.Data
             Contexto.Database.EnsureCreated();
 
             Asegurar_Columnas_Inventario(Contexto);
-
-            Cargar_Datos(Contexto);
         }
 
         private static void Asegurar_Columnas_Inventario(Contexto contexto)
@@ -37,43 +35,6 @@ namespace Barista.Data
 
         public static void Cargar_Datos(Contexto Contexto)
         {
-            if (Contexto.Recetas.Any())
-            {
-                return;
-            }
-
-            var Categoria_Frias = Contexto.Categorias.FirstOrDefault(c => c.Nombre == "Bebidas Frias");
-            if (Categoria_Frias == null)
-            {
-                Categoria_Frias = new Categoria { Nombre = "Bebidas Frias" };
-                Contexto.Categorias.Add(Categoria_Frias);
-            }
-
-            var Categoria_Calientes = Contexto.Categorias.FirstOrDefault(c => c.Nombre == "Bebidas Calientes");
-            if (Categoria_Calientes == null)
-            {
-                Categoria_Calientes = new Categoria { Nombre = "Bebidas Calientes" };
-                Contexto.Categorias.Add(Categoria_Calientes);
-            }
-
-            var Categoria_Alcohol = Contexto.Categorias.FirstOrDefault(c => c.Nombre == "Bebidas con alcohol");
-            if (Categoria_Alcohol == null)
-            {
-                Categoria_Alcohol = new Categoria { Nombre = "Bebidas con alcohol" };
-                Contexto.Categorias.Add(Categoria_Alcohol);
-            }
-
-            Contexto.SaveChanges();
-
-            var ingCafe = Obtener_Actualizar_Ingrediente(Contexto, "Café de Especialidad (Grano)", "g", 4500m, 1000m);
-            var ingLecheEntera = Obtener_Actualizar_Ingrediente(Contexto, "Leche Entera", "ml", 12000m, 3000m);
-            var ingLecheAvena = Obtener_Actualizar_Ingrediente(Contexto, "Leche de Avena", "ml", 800m, 1200m);
-            var ingAgua = Obtener_Actualizar_Ingrediente(Contexto, "Agua Purificada", "ml", 25000m, 5000m);
-            var ingJarabeVainilla = Obtener_Actualizar_Ingrediente(Contexto, "Jarabe de Vainilla", "ml", 1800m, 500m);
-            var ingJarabeCaramelo = Obtener_Actualizar_Ingrediente(Contexto, "Jarabe de Caramelo", "ml", 350m, 500m);
-            var ingHielo = Obtener_Actualizar_Ingrediente(Contexto, "Hielo", "g", 15000m, 3000m);
-            var ingChocolate = Obtener_Actualizar_Ingrediente(Contexto, "Salsa de Chocolate / Mocha", "g", 2000m, 500m);
-
             if (!Contexto.Usuarios.Any())
             {
                 Contexto.Usuarios.AddRange(
@@ -95,8 +56,46 @@ namespace Barista.Data
                 Contexto.SaveChanges();
             }
 
-            // 4. Bebidas y Recetas con Pasos de Barista
-            // --- Bebida: Espresso Doble ---
+            return;
+
+            if (Contexto.Recetas.Any())
+            {
+                return;
+            }
+
+            var Categoria_Frias = Contexto.Categorias.FirstOrDefault(c => c.Nombre == "Bebidas Frias");
+            if (Categoria_Frias == null)
+            {
+                Categoria_Frias = new Categoria { Nombre = "Bebidas Frias" };
+                Contexto.Categorias.Add(Categoria_Frias);
+            }
+
+            var Categoria_Calientes = Contexto.Categorias.FirstOrDefault(c => c.Nombre == "Bebidas Calientes");
+            if (Categoria_Calientes == null)
+            {
+                Categoria_Calientes = new Categoria { Nombre = "Bebidas Calientes" };
+                Contexto.Categorias.Add(Categoria_Calientes);
+            }
+
+            var Categoria_Alcohol = Contexto.Categorias.FirstOrDefault(c => c.Nombre == "Bebidas alcohólicas");
+            if (Categoria_Alcohol == null)
+            {
+                Categoria_Alcohol = new Categoria { Nombre = "Bebidas alcohólicas" };
+                Contexto.Categorias.Add(Categoria_Alcohol);
+            }
+
+            Contexto.SaveChanges();
+
+            var ingCafe = Obtener_Actualizar_Ingrediente(Contexto, "Café de Especialidad (Grano)", "g", 4500m, 1000m);
+            var ingLecheEntera = Obtener_Actualizar_Ingrediente(Contexto, "Leche Entera", "ml", 12000m, 3000m);
+            var ingLecheAvena = Obtener_Actualizar_Ingrediente(Contexto, "Leche de Avena", "ml", 800m, 1200m);
+            var ingAgua = Obtener_Actualizar_Ingrediente(Contexto, "Agua Purificada", "ml", 25000m, 5000m);
+            var ingJarabeVainilla = Obtener_Actualizar_Ingrediente(Contexto, "Jarabe de Vainilla", "ml", 1800m, 500m);
+            var ingJarabeCaramelo = Obtener_Actualizar_Ingrediente(Contexto, "Jarabe de Caramelo", "ml", 350m, 500m);
+            var ingHielo = Obtener_Actualizar_Ingrediente(Contexto, "Hielo", "g", 15000m, 3000m);
+            var ingChocolate = Obtener_Actualizar_Ingrediente(Contexto, "Salsa de Chocolate / Mocha", "g", 2000m, 500m);
+
+
             var espresso = new Bebida
             {
                 Nombre = "Espresso Doble (Doppio)",
@@ -129,7 +128,6 @@ namespace Barista.Data
                 new PasoPreparacion { IdReceta = recEspresso.IdReceta, NumeroPaso = 5, Instruccion = "Servir de inmediato en taza precalentada de espresso. Limpiar y purgar el grupo de nuevo." }
             );
 
-            // --- Bebida: Cappuccino Clásico ---
             var cappuccino = new Bebida
             {
                 Nombre = "Cappuccino Clásico",
@@ -163,7 +161,6 @@ namespace Barista.Data
                 new PasoPreparacion { IdReceta = recCapMediano.IdReceta, NumeroPaso = 6, Instruccion = "Verter desde el centro integrando la microespuma con la crema del espresso, finalizando con corazón o tulipán." }
             );
 
-            // --- Bebida: Latte Vainilla ---
             var latte = new Bebida
             {
                 Nombre = "Caffè Latte Vainilla",
@@ -196,7 +193,6 @@ namespace Barista.Data
                 new PasoPreparacion { IdReceta = recLatteGrande.IdReceta, NumeroPaso = 4, Instruccion = "Verter con flujo constante a una altura media para mezclar y bajar al final para dibujar arte latte." }
             );
 
-            // --- Bebida: Iced Caramel Macchiato ---
             var icedCaramel = new Bebida
             {
                 Nombre = "Iced Caramel Macchiato",
@@ -233,7 +229,6 @@ namespace Barista.Data
                 new PasoPreparacion { IdReceta = recIcedCaramel.IdReceta, NumeroPaso = 6, Instruccion = "Decorar la superficie con un patrón de rejilla cruzada usando el jarabe de caramelo." }
             );
 
-            // --- Bebida: Filtrado V60 ---
             var v60 = new Bebida
             {
                 Nombre = "Filtrado Artesanal V60",

@@ -52,12 +52,10 @@ namespace Barista.UI
                     .OrderBy(b => b.Nombre)
                     .ToListAsync();
 
-                // Sugerencias de nombres existentes: también se puede escribir uno nuevo
                 var nombresBebidas = new AutoCompleteStringCollection();
                 nombresBebidas.AddRange(_bebidas.Select(b => b.Nombre).ToArray());
                 Txt_Bebida.AutoCompleteCustomSource = nombresBebidas;
 
-                // Categorías existentes: también se puede escribir una categoría nueva
                 var categorias = await _contexto.Categorias
                     .OrderBy(c => c.Nombre)
                     .ToListAsync();
@@ -105,7 +103,6 @@ namespace Barista.UI
                 Cmb_Categoria.Text = receta.Bebida?.Categoria?.Nombre ?? "";
                 Cmb_Tamano.Text = receta.Tamaño;
 
-                // Cargar ingredientes
                 Dgv_Ingredientes.Rows.Clear();
                 foreach (var ri in receta.RecetaIngredientes)
                 {
@@ -114,7 +111,6 @@ namespace Barista.UI
                     Dgv_Ingredientes.Rows.Add(ri.IdIngrediente, nombre, ri.Cantidad.ToString("0.##"), unidad);
                 }
 
-                // Cargar pasos
                 _listaPasos.Clear();
                 var pasosOrdenados = receta.PasosPreparacion.OrderBy(p => p.NumeroPaso).ToList();
                 foreach (var paso in pasosOrdenados)
@@ -161,7 +157,6 @@ namespace Barista.UI
                 return;
             }
 
-            // Comprobar si ya está agregado
             foreach (DataGridViewRow row in Dgv_Ingredientes.Rows)
             {
                 if (row.Cells[0].Value is int id && id == ing.IdIngrediente)
@@ -176,7 +171,7 @@ namespace Barista.UI
 
         private void Dgv_Ingredientes_CellContentClick(object? sender, DataGridViewCellEventArgs e)
         {
-            if (e.RowIndex >= 0 && e.ColumnIndex == 4) // Columna Eliminar
+            if (e.RowIndex >= 0 && e.ColumnIndex == 4)
             {
                 Dgv_Ingredientes.Rows.RemoveAt(e.RowIndex);
             }
@@ -290,7 +285,6 @@ namespace Barista.UI
             {
                 Btn_Guardar.Enabled = false;
 
-                // Resolver la categoría (si no existe, se crea automáticamente)
                 var categoria = await _contexto.Categorias
                     .FirstOrDefaultAsync(c => c.Nombre.ToLower() == nombreCategoria.ToLower());
 
@@ -301,8 +295,6 @@ namespace Barista.UI
                     await _contexto.SaveChangesAsync();
                 }
 
-                // Resolver la bebida por nombre: si ya existe se reutiliza
-                // (aunque esté escrita con otras mayúsculas/minúsculas), si no se crea.
                 var bebida = await _contexto.Bebidas
                     .FirstOrDefaultAsync(b => b.Nombre.ToLower() == nombreBebida.ToLower());
 
@@ -314,12 +306,11 @@ namespace Barista.UI
 
                 bebida.IdCategoria = categoria.IdCategoria;
 
-                await _contexto.SaveChangesAsync(); // Genera el Id de la bebida si es nueva
+                await _contexto.SaveChangesAsync();
 
                 Receta receta;
                 if (_idReceta > 0)
                 {
-                    // Modo Edición
                     var existente = await _contexto.Recetas
                         .Include(r => r.RecetaIngredientes)
                         .Include(r => r.PasosPreparacion)
@@ -335,23 +326,20 @@ namespace Barista.UI
                     receta.IdBebida = bebida.IdBebida;
                     receta.Tamaño = tamano;
 
-                    // Remover ingredientes y pasos anteriores
                     _contexto.RecetaIngredientes.RemoveRange(receta.RecetaIngredientes);
                     _contexto.PasosPreparacion.RemoveRange(receta.PasosPreparacion);
                 }
                 else
                 {
-                    // Modo Creación
                     receta = new Receta
                     {
                         IdBebida = bebida.IdBebida,
                         Tamaño = tamano
                     };
                     _contexto.Recetas.Add(receta);
-                    await _contexto.SaveChangesAsync(); // Genera IdReceta
+                    await _contexto.SaveChangesAsync();
                 }
 
-                // Asignar ingredientes
                 foreach (DataGridViewRow row in Dgv_Ingredientes.Rows)
                 {
                     int idIng = row.Cells[0].Value is int val ? val : 0;
@@ -365,7 +353,6 @@ namespace Barista.UI
                     });
                 }
 
-                // Asignar pasos
                 for (int i = 0; i < _listaPasos.Count; i++)
                 {
                     receta.PasosPreparacion.Add(new PasoPreparacion
