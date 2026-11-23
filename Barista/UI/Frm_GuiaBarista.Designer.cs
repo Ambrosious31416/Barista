@@ -2,22 +2,10 @@ namespace Barista.UI
 {
     partial class Frm_GuiaBarista
     {
-        private System.ComponentModel.IContainer components = null;
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && (components != null))
-            {
-                components.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
         #region Windows Form Designer generated code
 
         private void InitializeComponent()
         {
-            components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dgvHeaderStyle = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dgvCellStyle = new System.Windows.Forms.DataGridViewCellStyle();
 
@@ -43,6 +31,7 @@ namespace Barista.UI
             Lbl_DescripcionBebida = new Label();
             Lbl_Tamano = new Label();
             Cmb_Tamanos = new ComboBox();
+            Btn_RegistrarPreparacion = new Button();
 
             // Split de Ingredientes y Pasos
             Pnl_Ingredientes = new GroupBox();
@@ -54,15 +43,6 @@ namespace Barista.UI
             Pnl_Pasos = new GroupBox();
             Lst_Pasos = new ListBox();
 
-            // Panel Cronómetro Barista
-            Pnl_Timer = new GroupBox();
-            Lbl_TimerDisplay = new Label();
-            Lbl_TimerTips = new Label();
-            Btn_TimerStart = new Button();
-            Btn_TimerPause = new Button();
-            Btn_TimerReset = new Button();
-            Timer_Extraccion = new System.Windows.Forms.Timer(components);
-
             Pnl_Header.SuspendLayout();
             Pnl_Left.SuspendLayout();
             Pnl_Filtros.SuspendLayout();
@@ -72,7 +52,6 @@ namespace Barista.UI
             Pnl_Ingredientes.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)Dgv_Ingredientes).BeginInit();
             Pnl_Pasos.SuspendLayout();
-            Pnl_Timer.SuspendLayout();
             SuspendLayout();
 
             // 
@@ -215,7 +194,6 @@ namespace Barista.UI
             // 
             Pnl_Detalle.BackColor = Color.White;
             Pnl_Detalle.BorderStyle = BorderStyle.FixedSingle;
-            Pnl_Detalle.Controls.Add(Pnl_Timer);
             Pnl_Detalle.Controls.Add(Pnl_Pasos);
             Pnl_Detalle.Controls.Add(Pnl_Ingredientes);
             Pnl_Detalle.Controls.Add(Pnl_RecetaInfo);
@@ -229,6 +207,7 @@ namespace Barista.UI
             // 
             // Pnl_RecetaInfo
             // 
+            Pnl_RecetaInfo.Controls.Add(Btn_RegistrarPreparacion);
             Pnl_RecetaInfo.Controls.Add(Cmb_Tamanos);
             Pnl_RecetaInfo.Controls.Add(Lbl_Tamano);
             Pnl_RecetaInfo.Controls.Add(Lbl_DescripcionBebida);
@@ -299,16 +278,36 @@ namespace Barista.UI
             Cmb_Tamanos.TabIndex = 0;
             Cmb_Tamanos.SelectedIndexChanged += Cmb_Tamanos_SelectedIndexChanged;
 
-            // 
+            //
+            // Btn_RegistrarPreparacion
+            //
+            Btn_RegistrarPreparacion.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            Btn_RegistrarPreparacion.BackColor = Color.FromArgb(46, 125, 50);
+            Btn_RegistrarPreparacion.Cursor = Cursors.Hand;
+            Btn_RegistrarPreparacion.Enabled = false;
+            Btn_RegistrarPreparacion.FlatAppearance.BorderSize = 0;
+            Btn_RegistrarPreparacion.FlatStyle = FlatStyle.Flat;
+            Btn_RegistrarPreparacion.Font = new Font("Segoe UI", 8.5F, FontStyle.Bold);
+            Btn_RegistrarPreparacion.ForeColor = Color.White;
+            Btn_RegistrarPreparacion.Location = new Point(505, 65);
+            Btn_RegistrarPreparacion.Name = "Btn_RegistrarPreparacion";
+            Btn_RegistrarPreparacion.Size = new Size(205, 26);
+            Btn_RegistrarPreparacion.TabIndex = 1;
+            Btn_RegistrarPreparacion.Text = "☕ Registrar preparación";
+            Btn_RegistrarPreparacion.UseVisualStyleBackColor = false;
+            Btn_RegistrarPreparacion.Click += Btn_RegistrarPreparacion_Click;
+
+            //
             // Pnl_Ingredientes
-            // 
+            //
             Pnl_Ingredientes.Controls.Add(Dgv_Ingredientes);
+            Pnl_Ingredientes.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             Pnl_Ingredientes.Font = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold);
             Pnl_Ingredientes.ForeColor = Color.FromArgb(43, 30, 26);
             Pnl_Ingredientes.Location = new Point(15, 115);
             Pnl_Ingredientes.Name = "Pnl_Ingredientes";
             Pnl_Ingredientes.Padding = new Padding(10);
-            Pnl_Ingredientes.Size = new Size(330, 345);
+            Pnl_Ingredientes.Size = new Size(330, 470);
             Pnl_Ingredientes.TabIndex = 1;
             Pnl_Ingredientes.TabStop = false;
             Pnl_Ingredientes.Text = "📋 Ingredientes y Gramajes";
@@ -381,7 +380,7 @@ namespace Barista.UI
             Pnl_Pasos.Location = new Point(355, 115);
             Pnl_Pasos.Name = "Pnl_Pasos";
             Pnl_Pasos.Padding = new Padding(10);
-            Pnl_Pasos.Size = new Size(378, 345);
+            Pnl_Pasos.Size = new Size(378, 470);
             Pnl_Pasos.TabIndex = 2;
             Pnl_Pasos.TabStop = false;
             Pnl_Pasos.Text = "📝 Pasos de Preparación Secuenciales";
@@ -402,104 +401,6 @@ namespace Barista.UI
             Lst_Pasos.TabIndex = 0;
             Lst_Pasos.DrawItem += Lst_Pasos_DrawItem;
             Lst_Pasos.MeasureItem += Lst_Pasos_MeasureItem;
-
-            // 
-            // Pnl_Timer
-            // 
-            Pnl_Timer.Anchor = AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            Pnl_Timer.BackColor = Color.FromArgb(250, 248, 245);
-            Pnl_Timer.Controls.Add(Btn_TimerReset);
-            Pnl_Timer.Controls.Add(Btn_TimerPause);
-            Pnl_Timer.Controls.Add(Btn_TimerStart);
-            Pnl_Timer.Controls.Add(Lbl_TimerTips);
-            Pnl_Timer.Controls.Add(Lbl_TimerDisplay);
-            Pnl_Timer.Font = new Font("Segoe UI Semibold", 9F, FontStyle.Bold);
-            Pnl_Timer.ForeColor = Color.FromArgb(43, 30, 26);
-            Pnl_Timer.Location = new Point(15, 470);
-            Pnl_Timer.Name = "Pnl_Timer";
-            Pnl_Timer.Size = new Size(718, 115);
-            Pnl_Timer.TabIndex = 3;
-            Pnl_Timer.TabStop = false;
-            Pnl_Timer.Text = "⏱️ Cronómetro de Extracción & Infusión para Baristas";
-
-            // 
-            // Lbl_TimerDisplay
-            // 
-            Lbl_TimerDisplay.AutoSize = true;
-            Lbl_TimerDisplay.Font = new Font("Consolas", 32F, FontStyle.Bold);
-            Lbl_TimerDisplay.ForeColor = Color.FromArgb(43, 30, 26);
-            Lbl_TimerDisplay.Location = new Point(25, 35);
-            Lbl_TimerDisplay.Name = "Lbl_TimerDisplay";
-            Lbl_TimerDisplay.Size = new Size(166, 51);
-            Lbl_TimerDisplay.Text = "00:00";
-
-            // 
-            // Lbl_TimerTips
-            // 
-            Lbl_TimerTips.AutoSize = true;
-            Lbl_TimerTips.Font = new Font("Segoe UI", 8.5F, FontStyle.Italic);
-            Lbl_TimerTips.ForeColor = Color.FromArgb(110, 100, 95);
-            Lbl_TimerTips.Location = new Point(205, 35);
-            Lbl_TimerTips.Name = "Lbl_TimerTips";
-            Lbl_TimerTips.Size = new Size(300, 15);
-            Lbl_TimerTips.Text = "Rango ideal espresso: 25 - 30s | Pre-infusión filtro: 30 - 45s";
-
-            // 
-            // Btn_TimerStart
-            // 
-            Btn_TimerStart.BackColor = Color.FromArgb(46, 125, 50);
-            Btn_TimerStart.Cursor = Cursors.Hand;
-            Btn_TimerStart.FlatAppearance.BorderSize = 0;
-            Btn_TimerStart.FlatStyle = FlatStyle.Flat;
-            Btn_TimerStart.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            Btn_TimerStart.ForeColor = Color.White;
-            Btn_TimerStart.Location = new Point(205, 57);
-            Btn_TimerStart.Name = "Btn_TimerStart";
-            Btn_TimerStart.Size = new Size(100, 36);
-            Btn_TimerStart.TabIndex = 0;
-            Btn_TimerStart.Text = "▶ Iniciar";
-            Btn_TimerStart.UseVisualStyleBackColor = false;
-            Btn_TimerStart.Click += Btn_TimerStart_Click;
-
-            // 
-            // Btn_TimerPause
-            // 
-            Btn_TimerPause.BackColor = Color.FromArgb(230, 120, 23);
-            Btn_TimerPause.Cursor = Cursors.Hand;
-            Btn_TimerPause.FlatAppearance.BorderSize = 0;
-            Btn_TimerPause.FlatStyle = FlatStyle.Flat;
-            Btn_TimerPause.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            Btn_TimerPause.ForeColor = Color.White;
-            Btn_TimerPause.Location = new Point(315, 57);
-            Btn_TimerPause.Name = "Btn_TimerPause";
-            Btn_TimerPause.Size = new Size(100, 36);
-            Btn_TimerPause.TabIndex = 1;
-            Btn_TimerPause.Text = "⏸ Pausar";
-            Btn_TimerPause.UseVisualStyleBackColor = false;
-            Btn_TimerPause.Click += Btn_TimerPause_Click;
-
-            // 
-            // Btn_TimerReset
-            // 
-            Btn_TimerReset.BackColor = Color.FromArgb(120, 115, 110);
-            Btn_TimerReset.Cursor = Cursors.Hand;
-            Btn_TimerReset.FlatAppearance.BorderSize = 0;
-            Btn_TimerReset.FlatStyle = FlatStyle.Flat;
-            Btn_TimerReset.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            Btn_TimerReset.ForeColor = Color.White;
-            Btn_TimerReset.Location = new Point(425, 57);
-            Btn_TimerReset.Name = "Btn_TimerReset";
-            Btn_TimerReset.Size = new Size(100, 36);
-            Btn_TimerReset.TabIndex = 2;
-            Btn_TimerReset.Text = "🔄 Reiniciar";
-            Btn_TimerReset.UseVisualStyleBackColor = false;
-            Btn_TimerReset.Click += Btn_TimerReset_Click;
-
-            // 
-            // Timer_Extraccion
-            // 
-            Timer_Extraccion.Interval = 1000;
-            Timer_Extraccion.Tick += Timer_Extraccion_Tick;
 
             // 
             // Frm_GuiaBarista
@@ -527,8 +428,6 @@ namespace Barista.UI
             Pnl_Ingredientes.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)Dgv_Ingredientes).EndInit();
             Pnl_Pasos.ResumeLayout(false);
-            Pnl_Timer.ResumeLayout(false);
-            Pnl_Timer.PerformLayout();
             ResumeLayout(false);
         }
 
@@ -552,6 +451,7 @@ namespace Barista.UI
         private Label Lbl_DescripcionBebida;
         private Label Lbl_Tamano;
         private ComboBox Cmb_Tamanos;
+        private Button Btn_RegistrarPreparacion;
         private GroupBox Pnl_Ingredientes;
         private DataGridView Dgv_Ingredientes;
         private DataGridViewTextBoxColumn Col_Ingrediente;
@@ -559,12 +459,5 @@ namespace Barista.UI
         private DataGridViewTextBoxColumn Col_Unidad;
         private GroupBox Pnl_Pasos;
         private ListBox Lst_Pasos;
-        private GroupBox Pnl_Timer;
-        private Label Lbl_TimerDisplay;
-        private Label Lbl_TimerTips;
-        private Button Btn_TimerStart;
-        private Button Btn_TimerPause;
-        private Button Btn_TimerReset;
-        private System.Windows.Forms.Timer Timer_Extraccion;
     }
 }

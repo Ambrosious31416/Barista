@@ -31,6 +31,8 @@ namespace Barista.UI
             Grp_InfoBasica = new GroupBox();
             Lbl_Bebida = new Label();
             Txt_Bebida = new TextBox();
+            Lbl_Descripcion = new Label();
+            Txt_Descripcion = new TextBox();
             Lbl_Categoria = new Label();
             Cmb_Categoria = new ComboBox();
             Lbl_Tamano = new Label();
@@ -171,6 +173,8 @@ namespace Barista.UI
             // 
             // Grp_InfoBasica
             // 
+            Grp_InfoBasica.Controls.Add(Txt_Descripcion);
+            Grp_InfoBasica.Controls.Add(Lbl_Descripcion);
             Grp_InfoBasica.Controls.Add(Cmb_Tamano);
             Grp_InfoBasica.Controls.Add(Lbl_Tamano);
             Grp_InfoBasica.Controls.Add(Cmb_Categoria);
@@ -183,7 +187,7 @@ namespace Barista.UI
             Grp_InfoBasica.Location = new Point(15, 15);
             Grp_InfoBasica.Name = "Grp_InfoBasica";
             Grp_InfoBasica.Padding = new Padding(10);
-            Grp_InfoBasica.Size = new Size(850, 75);
+            Grp_InfoBasica.Size = new Size(850, 130);
             Grp_InfoBasica.TabIndex = 0;
             Grp_InfoBasica.TabStop = false;
             Grp_InfoBasica.Text = "1. Información de la Receta";
@@ -253,6 +257,28 @@ namespace Barista.UI
             Cmb_Tamano.Size = new Size(265, 25);
             Cmb_Tamano.TabIndex = 2;
 
+            //
+            // Lbl_Descripcion
+            //
+            Lbl_Descripcion.AutoSize = true;
+            Lbl_Descripcion.Font = new Font("Segoe UI", 9F);
+            Lbl_Descripcion.Location = new Point(15, 75);
+            Lbl_Descripcion.Name = "Lbl_Descripcion";
+            Lbl_Descripcion.Size = new Size(75, 15);
+            Lbl_Descripcion.Text = "Descripción:";
+
+            //
+            // Txt_Descripcion
+            //
+            Txt_Descripcion.Font = new Font("Segoe UI", 9.5F);
+            Txt_Descripcion.Location = new Point(15, 93);
+            Txt_Descripcion.Multiline = true;
+            Txt_Descripcion.Name = "Txt_Descripcion";
+            Txt_Descripcion.PlaceholderText = "Describe la bebida, sus notas o características...";
+            Txt_Descripcion.ScrollBars = ScrollBars.Vertical;
+            Txt_Descripcion.Size = new Size(820, 28);
+            Txt_Descripcion.TabIndex = 3;
+
             // 
             // Grp_Ingredientes
             // 
@@ -265,10 +291,10 @@ namespace Barista.UI
             Grp_Ingredientes.Controls.Add(Lbl_SeleccionarIngrediente);
             Grp_Ingredientes.Font = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold);
             Grp_Ingredientes.ForeColor = Color.FromArgb(43, 30, 26);
-            Grp_Ingredientes.Location = new Point(15, 96);
+            Grp_Ingredientes.Location = new Point(15, 151);
             Grp_Ingredientes.Name = "Grp_Ingredientes";
             Grp_Ingredientes.Padding = new Padding(10);
-            Grp_Ingredientes.Size = new Size(415, 460);
+            Grp_Ingredientes.Size = new Size(415, 405);
             Grp_Ingredientes.TabIndex = 1;
             Grp_Ingredientes.TabStop = false;
             Grp_Ingredientes.Text = "2. Insumos e Ingredientes";
@@ -420,10 +446,10 @@ namespace Barista.UI
             Grp_Pasos.Controls.Add(Lbl_NuevaInstruccion);
             Grp_Pasos.Font = new Font("Segoe UI Semibold", 9.5F, FontStyle.Bold);
             Grp_Pasos.ForeColor = Color.FromArgb(43, 30, 26);
-            Grp_Pasos.Location = new Point(440, 96);
+            Grp_Pasos.Location = new Point(440, 151);
             Grp_Pasos.Name = "Grp_Pasos";
             Grp_Pasos.Padding = new Padding(10);
-            Grp_Pasos.Size = new Size(425, 460);
+            Grp_Pasos.Size = new Size(425, 405);
             Grp_Pasos.TabIndex = 2;
             Grp_Pasos.TabStop = false;
             Grp_Pasos.Text = "3. Pasos de Preparación Secuenciales";
@@ -480,7 +506,7 @@ namespace Barista.UI
             Lst_Pasos.ItemHeight = 15;
             Lst_Pasos.Location = new Point(10, 100);
             Lst_Pasos.Name = "Lst_Pasos";
-            Lst_Pasos.Size = new Size(315, 347);
+            Lst_Pasos.Size = new Size(315, 292);
             Lst_Pasos.TabIndex = 2;
 
             // 
@@ -579,6 +605,8 @@ namespace Barista.UI
         private GroupBox Grp_InfoBasica;
         private Label Lbl_Bebida;
         private TextBox Txt_Bebida;
+        private Label Lbl_Descripcion;
+        private TextBox Txt_Descripcion;
         private Label Lbl_Categoria;
         private ComboBox Cmb_Categoria;
         private Label Lbl_Tamano;

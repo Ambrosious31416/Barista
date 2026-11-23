@@ -1,6 +1,7 @@
 using Barista.Data;
 using Barista.Modelos;
 using Barista.Servicios;
+using Microsoft.EntityFrameworkCore;
 
 namespace Barista.UI
 {
@@ -12,8 +13,8 @@ namespace Barista.UI
         private List<Bebida> _bebidasActuales = new();
         private List<Receta> _recetasBebidaActual = new();
         private Receta? _recetaSeleccionada;
+        private bool _registrandoPreparacion;
 
-        private int _segundosTimer = 0;
         private bool _cargando = false;
 
         public Frm_GuiaBarista()
@@ -25,11 +26,7 @@ namespace Barista.UI
             _recetaServicio = new Receta_Servicio(_contexto);
 
             Load += Frm_GuiaBarista_Load;
-            FormClosed += (s, e) =>
-            {
-                Timer_Extraccion.Stop();
-                _contexto.Dispose();
-            };
+            FormClosed += (s, e) => _contexto.Dispose();
         }
 
         private async void Frm_GuiaBarista_Load(object? sender, EventArgs e)
@@ -149,6 +146,9 @@ namespace Barista.UI
 
         private async void Cmb_Tamanos_SelectedIndexChanged(object? sender, EventArgs e)
         {
+            Btn_RegistrarPreparacion.Enabled = false;
+            _recetaSeleccionada = null;
+
             if (Cmb_Tamanos.SelectedItem is not Receta receta)
             {
                 return;
@@ -156,8 +156,11 @@ namespace Barista.UI
 
             try
             {
-                _recetaSeleccionada = await _recetaServicio.ObtenerDetalleRecetaAsync(receta.IdReceta);
-                MostrarDetalleReceta(_recetaSeleccionada);
+                var detalle = await _recetaServicio.ObtenerDetalleRecetaAsync(receta.IdReceta);
+                if (Cmb_Tamanos.SelectedItem is Receta seleccionada && seleccionada.IdReceta == receta.IdReceta)
+                {
+                    MostrarDetalleReceta(detalle);
+                }
             }
             catch (Exception ex)
             {
@@ -169,6 +172,8 @@ namespace Barista.UI
         {
             Dgv_Ingredientes.Rows.Clear();
             Lst_Pasos.Items.Clear();
+            _recetaSeleccionada = receta;
+            Btn_RegistrarPreparacion.Enabled = receta?.RecetaIngredientes?.Any(ri => ri.Cantidad > 0) == true;
 
             if (receta == null) return;
 
@@ -211,6 +216,153 @@ namespace Barista.UI
             Cmb_Tamanos.Enabled = false;
             Dgv_Ingredientes.Rows.Clear();
             Lst_Pasos.Items.Clear();
+            _recetaSeleccionada = null;
+            Btn_RegistrarPreparacion.Enabled = false;
+        }
+
+        private async void Btn_RegistrarPreparacion_Click(object? sender, EventArgs e)
+        {
+            if (_registrandoPreparacion || _recetaSeleccionada is not Receta receta)
+            {
+                return;
+            }
+
+            if (receta.RecetaIngredientes.Any(ri => ri.Cantidad <= 0))
+            {
+                MessageBox.Show("La receta contiene cantidades inválidas. Corrígela antes de registrar la preparación.", "Receta inválida", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            var cantidades = receta.RecetaIngredientes.ToList();
+
+            if (cantidades.Count == 0)
+            {
+                MessageBox.Show("La receta no tiene ingredientes con cantidades válidas.", "No se puede registrar", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            try
+            {
+                var idsIngredientes = cantidades.Select(ri => ri.IdIngrediente).Distinct().ToList();
+                var existenciasActuales = await _contexto.Ingredientes
+                    .AsNoTracking()
+                    .Where(i => idsIngredientes.Contains(i.IdIngrediente))
+                    .ToDictionaryAsync(i => i.IdIngrediente);
+
+                if (existenciasActuales.Count != idsIngredientes.Count)
+                {
+                    MessageBox.Show("Uno o más ingredientes de esta receta ya no existen en el inventario. No se realizó ningún descuento.", "Ingrediente no encontrado", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                var consumos = cantidades.Select(ri => new
+                {
+                    Ingrediente = existenciasActuales[ri.IdIngrediente],
+                    ri.Cantidad
+                }).ToList();
+
+                var faltantesAntesDeConfirmar = consumos
+                    .Where(c => c.Ingrediente.StockActual < c.Cantidad)
+                    .Select(c => $"• {c.Ingrediente.Nombre}: requiere {c.Cantidad:0.##} {c.Ingrediente.Unidad}, disponible {c.Ingrediente.StockActual:0.##} {c.Ingrediente.Unidad}")
+                    .ToList();
+
+                if (faltantesAntesDeConfirmar.Count > 0)
+                {
+                    MessageBox.Show(
+                        "No hay suficiente inventario para preparar esta receta. No se realizó ningún descuento.\n\n" + string.Join(Environment.NewLine, faltantesAntesDeConfirmar),
+                        "Stock insuficiente",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+
+                string resumen = string.Join(Environment.NewLine, consumos.Select(c =>
+                    $"• {c.Ingrediente.Nombre}: {c.Cantidad:0.##} {c.Ingrediente.Unidad} (disponible: {c.Ingrediente.StockActual:0.##})"));
+                string nombrePreparacion = receta.Bebida?.Nombre ?? "la receta seleccionada";
+
+                var confirmacion = MessageBox.Show(
+                    $"¿Confirmas que preparaste {nombrePreparacion} ({receta.Tamaño})?\n\nSe descontará del inventario:\n{resumen}",
+                    "Confirmar preparación",
+                    MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question);
+
+                if (confirmacion != DialogResult.Yes)
+                {
+                    return;
+                }
+
+                _registrandoPreparacion = true;
+                Btn_RegistrarPreparacion.Enabled = false;
+
+                await using var transaccion = await _contexto.Database.BeginTransactionAsync();
+                var ingredientes = await _contexto.Ingredientes
+                    .Where(i => idsIngredientes.Contains(i.IdIngrediente))
+                    .ToListAsync();
+                foreach (var ingrediente in ingredientes)
+                {
+                    await _contexto.Entry(ingrediente).ReloadAsync();
+                }
+                var ingredientesPorId = ingredientes.ToDictionary(i => i.IdIngrediente);
+
+                if (ingredientesPorId.Count != idsIngredientes.Count)
+                {
+                    await transaccion.RollbackAsync();
+                    MessageBox.Show("Uno o más ingredientes de esta receta ya no existen en el inventario. No se realizó ningún descuento.", "Ingrediente no encontrado", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                var faltantes = cantidades
+                    .Where(ri => ingredientesPorId[ri.IdIngrediente].StockActual < ri.Cantidad)
+                    .Select(ri =>
+                    {
+                        var ingrediente = ingredientesPorId[ri.IdIngrediente];
+                        return $"• {ingrediente.Nombre}: requiere {ri.Cantidad:0.##} {ingrediente.Unidad}, disponible {ingrediente.StockActual:0.##} {ingrediente.Unidad}";
+                    })
+                    .ToList();
+
+                if (faltantes.Count > 0)
+                {
+                    await transaccion.RollbackAsync();
+                    MessageBox.Show(
+                        "El inventario cambió y ya no alcanza para preparar esta receta. No se realizó ningún descuento.\n\n" + string.Join(Environment.NewLine, faltantes),
+                        "Stock insuficiente",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Warning);
+                    return;
+                }
+
+                foreach (var cantidad in cantidades)
+                {
+                    var ingrediente = ingredientesPorId[cantidad.IdIngrediente];
+                    decimal stockAnterior = ingrediente.StockActual;
+                    ingrediente.StockActual -= cantidad.Cantidad;
+
+                    _contexto.MovimientosInventario.Add(new MovimientoInventario
+                    {
+                        IdIngrediente = ingrediente.IdIngrediente,
+                        Fecha = DateTime.Now,
+                        Tipo = "Consumo",
+                        Cantidad = cantidad.Cantidad,
+                        StockAnterior = stockAnterior,
+                        StockPosterior = ingrediente.StockActual,
+                        Referencia = $"Preparación: {receta.Bebida?.Nombre ?? "bebida"} ({receta.Tamaño})"
+                    });
+                }
+
+                await _contexto.SaveChangesAsync();
+                await transaccion.CommitAsync();
+
+                MessageBox.Show("Preparación registrada. El inventario se actualizó correctamente.", "Preparación registrada", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al registrar la preparación y actualizar el inventario: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                _registrandoPreparacion = false;
+                Btn_RegistrarPreparacion.Enabled = _recetaSeleccionada?.RecetaIngredientes?.Any(ri => ri.Cantidad > 0) == true;
+            }
         }
 
         private async void Txt_Buscar_TextChanged(object? sender, EventArgs e)
@@ -317,56 +469,6 @@ namespace Barista.UI
 
             using var penSep = new Pen(Color.FromArgb(242, 240, 238));
             e.Graphics.DrawLine(penSep, e.Bounds.Left + 8, e.Bounds.Bottom - 1, e.Bounds.Right - 8, e.Bounds.Bottom - 1);
-        }
-
-        #endregion
-
-        #region Cronómetro de Barista
-
-        private void Btn_TimerStart_Click(object? sender, EventArgs e)
-        {
-            Timer_Extraccion.Start();
-            ActualizarEstiloTimer();
-        }
-
-        private void Btn_TimerPause_Click(object? sender, EventArgs e)
-        {
-            Timer_Extraccion.Stop();
-            ActualizarEstiloTimer();
-        }
-
-        private void Btn_TimerReset_Click(object? sender, EventArgs e)
-        {
-            Timer_Extraccion.Stop();
-            _segundosTimer = 0;
-            Lbl_TimerDisplay.Text = "00:00";
-            Lbl_TimerDisplay.ForeColor = Color.FromArgb(43, 30, 26);
-        }
-
-        private void Timer_Extraccion_Tick(object? sender, EventArgs e)
-        {
-            _segundosTimer++;
-            int minutos = _segundosTimer / 60;
-            int seg = _segundosTimer % 60;
-            Lbl_TimerDisplay.Text = $"{minutos:D2}:{seg:D2}";
-
-            ActualizarEstiloTimer();
-        }
-
-        private void ActualizarEstiloTimer()
-        {
-            if (_segundosTimer >= 25 && _segundosTimer <= 30)
-            {
-                Lbl_TimerDisplay.ForeColor = Color.FromArgb(46, 125, 50);
-            }
-            else if (_segundosTimer > 30)
-            {
-                Lbl_TimerDisplay.ForeColor = Color.FromArgb(198, 40, 40);
-            }
-            else
-            {
-                Lbl_TimerDisplay.ForeColor = Color.FromArgb(43, 30, 26);
-            }
         }
 
         #endregion

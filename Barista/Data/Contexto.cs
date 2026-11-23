@@ -18,6 +18,7 @@ namespace Barista.Data
         public DbSet<RecetaIngrediente> RecetaIngredientes { get; set; }
         public DbSet<PasoPreparacion> PasosPreparacion { get; set; }
         public DbSet<Usuario> Usuarios { get; set; }
+        public DbSet<MovimientoInventario> MovimientosInventario { get; set; }
 
         protected override void OnModelCreating(ModelBuilder ModelBuilder)
         {
@@ -40,6 +41,15 @@ namespace Barista.Data
 
             ModelBuilder.Entity<Usuario>()
                 .HasKey(u => u.IdUsuario);
+
+            ModelBuilder.Entity<MovimientoInventario>()
+                .HasKey(m => m.IdMovimiento);
+
+            ModelBuilder.Entity<MovimientoInventario>()
+                .HasOne(m => m.Ingrediente)
+                .WithMany()
+                .HasForeignKey(m => m.IdIngrediente)
+                .OnDelete(DeleteBehavior.Restrict);
 
             ModelBuilder.Entity<RecetaIngrediente>()
                 .HasKey(ri => new

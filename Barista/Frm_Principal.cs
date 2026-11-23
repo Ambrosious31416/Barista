@@ -114,6 +114,11 @@ namespace Barista
             Navegar(Btn_Inventario, () => new Frm_Inventario());
         }
 
+        private void Btn_Reportes_Click(object? sender, EventArgs e)
+        {
+            Navegar(Btn_Reportes, () => new Frm_Reportes());
+        }
+
         private void Btn_Salir_Click(object? sender, EventArgs e)
         {
             Close();
